@@ -8,6 +8,11 @@ const pool = new Pool({
   max: 10,
 });
 
+// 유휴 클라이언트 에러 감지 - 연결 풀 안정성 향상
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle client:', err);
+});
+
 export async function initDatabase() {
   console.log('Database connected');
 }
