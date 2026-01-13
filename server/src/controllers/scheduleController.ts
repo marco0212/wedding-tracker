@@ -29,8 +29,7 @@ function formatSchedule(row: ScheduleRow) {
 export async function getSchedules(req: AuthRequest, res: Response) {
   try {
     const result = await pool.query(
-      'SELECT * FROM schedules WHERE user_id = $1 ORDER BY due_date ASC NULLS LAST, created_at DESC',
-      [req.userId]
+      'SELECT * FROM schedules ORDER BY due_date ASC NULLS LAST, created_at DESC'
     );
 
     res.json(result.rows.map(formatSchedule));
@@ -66,8 +65,8 @@ export async function updateSchedule(req: AuthRequest, res: Response) {
 
   try {
     const existingResult = await pool.query(
-      'SELECT * FROM schedules WHERE id = $1 AND user_id = $2',
-      [id, req.userId]
+      'SELECT * FROM schedules WHERE id = $1',
+      [id]
     );
 
     if (existingResult.rows.length === 0) {
@@ -100,8 +99,8 @@ export async function deleteSchedule(req: AuthRequest, res: Response) {
 
   try {
     const existingResult = await pool.query(
-      'SELECT id FROM schedules WHERE id = $1 AND user_id = $2',
-      [id, req.userId]
+      'SELECT id FROM schedules WHERE id = $1',
+      [id]
     );
 
     if (existingResult.rows.length === 0) {

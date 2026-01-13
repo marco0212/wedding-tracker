@@ -31,8 +31,7 @@ function formatBudget(row: BudgetRow) {
 export async function getBudgets(req: AuthRequest, res: Response) {
   try {
     const result = await pool.query(
-      'SELECT * FROM budgets WHERE user_id = $1 ORDER BY category ASC, created_at DESC',
-      [req.userId]
+      'SELECT * FROM budgets ORDER BY category ASC, created_at DESC'
     );
 
     res.json(result.rows.map(formatBudget));
@@ -76,8 +75,8 @@ export async function updateBudget(req: AuthRequest, res: Response) {
 
   try {
     const existingResult = await pool.query(
-      'SELECT * FROM budgets WHERE id = $1 AND user_id = $2',
-      [id, req.userId]
+      'SELECT * FROM budgets WHERE id = $1',
+      [id]
     );
 
     if (existingResult.rows.length === 0) {
@@ -111,8 +110,8 @@ export async function deleteBudget(req: AuthRequest, res: Response) {
 
   try {
     const existingResult = await pool.query(
-      'SELECT id FROM budgets WHERE id = $1 AND user_id = $2',
-      [id, req.userId]
+      'SELECT id FROM budgets WHERE id = $1',
+      [id]
     );
 
     if (existingResult.rows.length === 0) {
@@ -131,13 +130,11 @@ export async function deleteBudget(req: AuthRequest, res: Response) {
 export async function getBudgetSummary(req: AuthRequest, res: Response) {
   try {
     const byCategory = await pool.query(
-      'SELECT category, SUM(budget_amount) as total_budget, SUM(actual_amount) as total_actual FROM budgets WHERE user_id = $1 GROUP BY category',
-      [req.userId]
+      'SELECT category, SUM(budget_amount) as total_budget, SUM(actual_amount) as total_actual FROM budgets GROUP BY category'
     );
 
     const totals = await pool.query(
-      'SELECT COALESCE(SUM(budget_amount), 0) as total_budget, COALESCE(SUM(actual_amount), 0) as total_actual FROM budgets WHERE user_id = $1',
-      [req.userId]
+      'SELECT COALESCE(SUM(budget_amount), 0) as total_budget, COALESCE(SUM(actual_amount), 0) as total_actual FROM budgets'
     );
 
     res.json({
