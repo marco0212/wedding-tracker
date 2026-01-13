@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { initDatabase } from './db/database';
+import pool, { initDatabase } from './db/database';
 import authRoutes from './routes/auth';
 import scheduleRoutes from './routes/schedules';
 import budgetRoutes from './routes/budgets';
@@ -31,6 +31,7 @@ app.listen(PORT, () => {
     const INTERVAL = 14 * 60 * 1000; // 14분
     setInterval(async () => {
       try {
+        await pool.query('SELECT 1');
         await fetch(`${RENDER_URL}/api/health`);
         console.log('[Keep-Alive] Ping sent');
       } catch (error) {
