@@ -196,7 +196,7 @@ export default function Schedules() {
           </div>
         )}
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-white rounded-lg shadow overflow-x-auto">
           {schedules.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
               등록된 일정이 없습니다.
