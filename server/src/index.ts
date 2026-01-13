@@ -24,4 +24,19 @@ app.get('/api/health', (_, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+
+  // Keep-alive ping (Render 휴면 방지)
+  const RENDER_URL = process.env.RENDER_EXTERNAL_URL;
+  if (RENDER_URL) {
+    const INTERVAL = 14 * 60 * 1000; // 14분
+    setInterval(async () => {
+      try {
+        await fetch(`${RENDER_URL}/api/health`);
+        console.log('[Keep-Alive] Ping sent');
+      } catch (error) {
+        console.error('[Keep-Alive] Ping failed:', error);
+      }
+    }, INTERVAL);
+    console.log('[Keep-Alive] Self-ping enabled');
+  }
 });
