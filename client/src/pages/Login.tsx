@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { isAxiosError } from 'axios';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -18,8 +19,12 @@ export default function Login() {
     try {
       await login(email, password);
       navigate('/');
-    } catch {
-      setError('이메일 또는 비밀번호가 올바르지 않습니다.');
+    } catch (error: unknown) {
+      if (isAxiosError(error) && error.response?.status === 400) {
+        setError('이메일 또는 비밀번호가 올바르지 않습니다.');
+      } else {
+        setError('일시적으로 문제가 생겼습니다. 잠시 후 다시 이용해주시기 바랍니다.');
+      }
     } finally {
       setLoading(false);
     }

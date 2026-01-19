@@ -63,12 +63,12 @@ export async function login(req: Request, res: Response) {
     const user = result.rows[0] as UserRow | undefined;
 
     if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(400).json({ error: 'Invalid credentials' });
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(400).json({ error: 'Invalid credentials' });
     }
 
     const token = generateToken(user.id);
